@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: stg_hubspot_contacts
+    description: "Cleaned and standardized HubSpot contacts (restaurant owners)."
+    columns:
+      - name: contact_id
+        description: "Primary key for the contact."
+        tests:
+          - unique
+          - not_null
+      - name: restaurant_name
+        description: "Name of the restaurant or business."
+      - name: contact_created_at
+        description: "Timestamp when the contact entered the system."
+
+  - name: stg_hubspot_web_visits
+    description: "Cleaned web visit logs for marketing attribution."
+    columns:
+      - name: visit_id
+        description: "Primary key for the web visit event."
+        tests:
+          - unique
+          - not_null
+      - name: contact_id
+        description: "Foreign key linking to stg_hubspot_contacts."
+        tests:
+          - not_null
+      - name: marketing_channel
+        description: "The UTM source (e.g., Google Ads, LinkedIn)."
+
+  - name: stg_sfdc_opportunities
+    description: "Cleaned Salesforce opportunities representing the sales pipeline."
+    columns:
+      - name: opportunity_id
+        description: "Primary key for the opportunity."
+        tests:
+          - unique
+          - not_null
+      - name: arr_amount
+        description: "Annual Recurring Revenue in USD."
+      - name: is_closed_won
+        description: "Boolean indicating if the deal was successfully closed."

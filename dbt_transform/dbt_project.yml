@@ -1,0 +1,19 @@
+name: 'gtm_project'
+version: '1.0.0'
+config-version: 2
+
+profile: 'gtm_project'
+
+model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  owner_gtm_project:
+    # Staging models will be created as views
+    staging:
+      +materialized: view
+      +schema: staging
+    # Mart models (business logic) will be created as physical tables
+    marts:
+      +materialized: table

@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: gtm_raw_sources
+    database: GTM_PROJECT_DB 
+    schema: RAW              
+    tables:
+      - name: raw_hubspot_contacts
+        description: "Raw contact records synced from HubSpot."
+      - name: raw_hubspot_web_visits
+        description: "Raw website visit events synced from HubSpot."
+      - name: raw_sfdc_opportunities
+        description: "Raw sales opportunities synced from Salesforce."

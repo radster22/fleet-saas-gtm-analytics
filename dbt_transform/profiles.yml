@@ -1,0 +1,14 @@
+owner_gtm_project:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: accountadmin  # Or your specific Snowflake role
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      schema: ANALYTICS   # dbt will create this new schema for the clean data
+      threads: 4
+      client_session_keep_alive: False
