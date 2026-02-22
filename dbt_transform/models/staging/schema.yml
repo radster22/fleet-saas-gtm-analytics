@@ -13,8 +13,8 @@ models:
         description: "Contact first name."
       - name: last_name
         description: "Contact last name."
-      - name: restaurant_name
-        description: "Name of the restaurant or business."
+      - name: company_name
+        description: "Name of the company or business."
       - name: contact_created_at
         description: "Timestamp when the contact entered the system."
 

@@ -35,7 +35,7 @@ select
     c.contact_id,
     c.first_name,
     c.last_name,
-    c.restaurant_name,
+    c.company_name,
     c.contact_created_at,
     coalesce(w.total_web_visits, 0) as total_web_visits,
     count(o.opportunity_id) as total_opportunities,

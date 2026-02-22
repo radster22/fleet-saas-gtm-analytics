@@ -23,7 +23,7 @@ contacts as (
 select
     o.opportunity_id,
     o.contact_id,
-    c.restaurant_name,
+    c.company_name,
     o.arr_amount,
     ft.marketing_channel as acquiring_channel,
     o.opp_closed_at

@@ -29,17 +29,17 @@ def generate_and_load_data():
 
     # 1. Create Raw Tables
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS raw_hubspot_contacts (
+        CREATE OR REPLACE TABLE raw_hubspot_contacts (
             contact_id VARCHAR,
             first_name VARCHAR,
             last_name VARCHAR,
-            restaurant_name VARCHAR,
+            company_name VARCHAR,
             contact_created_at TIMESTAMP
         )
     """)
     
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS raw_hubspot_web_visits (
+        CREATE OR REPLACE TABLE raw_hubspot_web_visits (
             visit_id VARCHAR,
             contact_id VARCHAR,
             utm_source VARCHAR,
@@ -49,7 +49,7 @@ def generate_and_load_data():
     """)
 
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS raw_sfdc_opportunities (
+        CREATE OR REPLACE TABLE raw_sfdc_opportunities (
             opportunity_id VARCHAR,
             contact_id VARCHAR,
             stage VARCHAR,

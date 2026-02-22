@@ -1,9 +1,9 @@
 # Use an official, lightweight Python image
 FROM python:3.10-slim
 
-# Install system dependencies required for cron and dbt
+# Install system dependencies required for dbt and git
 RUN apt-get update && \
-    apt-get install -y cron git && \
+    apt-get install -y git && \
     rm -rf /var/lib/apt/lists/*
 
 # Set the working directory inside the container
@@ -13,8 +13,5 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Create a log file for cron jobs later
-RUN touch /var/log/cron.log
-
-# Command to keep the container alive so we can develop inside it
+# Keep the container alive for development and Airflow integration later
 CMD ["tail", "-f", "/dev/null"]

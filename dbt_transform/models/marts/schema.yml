@@ -16,8 +16,8 @@ models:
         description: "Contact first name."
       - name: last_name
         description: "Contact last name."
-      - name: restaurant_name
-        description: "Restaurant or company name tied to the account."
+      - name: company_name
+        description: "Company name tied to the account."
       - name: contact_created_at
         description: "Timestamp when the source contact was created."
       - name: total_web_visits
@@ -46,7 +46,7 @@ models:
           - relationships:
               to: ref('stg_hubspot_contacts')
               field: contact_id
-      - name: restaurant_name
+      - name: company_name
         description: "Restaurant or company tied to the attributed opportunity."
       - name: arr_amount
         description: "Attributed ARR amount from the opportunity."

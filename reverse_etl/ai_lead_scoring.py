@@ -29,7 +29,12 @@ def score_prospect_with_ollama(prompt_context: str) -> dict:
             "model": OLLAMA_MODEL,
             "messages": [{"role": "user", "content": prompt_context}],
             "format": "json",
-            "options": {"temperature": 0.3},
+            "options": {
+                "temperature": 0.5,     # Low temp for strict adherence to the scoring logic
+                "top_p": 0.9,           # Focused vocabulary for professional B2B tone
+                "num_predict": 500,     # Hard limit on length to ensure it's exactly 1 sentence
+                "seed": 42
+                },
             "stream": False,
         },
         timeout=90,
@@ -50,7 +55,7 @@ def analyze_and_score_leads():
         """
         SELECT
             contact_id,
-            restaurant_name as company_name,
+            company_name,
             total_web_visits,
             current_pipeline_stage
         FROM ANALYTICS.dim_accounts
@@ -60,10 +65,13 @@ def analyze_and_score_leads():
     )
     prospects = cursor.fetchall()
 
-    # 2. Setup the Reverse ETL target table in Snowflake
+    # 2. Setup the Reverse ETL target schema and table in Snowflake
+    print("Setting up REVERSE_ETL_OUTBOUND schema...")
+    cursor.execute("CREATE SCHEMA IF NOT EXISTS REVERSE_ETL_OUTBOUND")
+
     cursor.execute(
         """
-        CREATE TABLE IF NOT EXISTS RAW.sfdc_account_enrichment (
+        CREATE OR REPLACE TABLE REVERSE_ETL_OUTBOUND.sfdc_account_enrichment (
             contact_id VARCHAR,
             ai_lead_score INT,
             ai_efficiency_pitch VARCHAR,
@@ -88,10 +96,12 @@ def analyze_and_score_leads():
         - Pipeline Stage: {stage}
 
         Task:
-        1. Assign a Lead Score (1-100) based on their engagement. Higher web visits = higher score.
+        1. Calculate a dynamic Lead Score (1-100). Do NOT use a hardcoded number. 
+           - Give a higher base score if the stage is 'Qualification' vs 'Prospecting'.
+           - Add 5 points for every recent website visit.
         2. Write a 1-sentence sales hook for the rep, focusing on bridging operational efficiency gaps and sustainable commuting.
 
-        Output strictly as JSON: {{"score": 85, "pitch": "Your sentence here."}}
+        Output strictly as JSON: {{"score": integer, "pitch": "string"}}
         """
 
         try:
@@ -114,7 +124,7 @@ def analyze_and_score_leads():
     print("Pushing AI Enrichment data back to Snowflake (Simulating Reverse ETL)...")
     cursor.executemany(
         """
-        INSERT INTO RAW.sfdc_account_enrichment
+        INSERT INTO REVERSE_ETL_OUTBOUND.sfdc_account_enrichment
         (contact_id, ai_lead_score, ai_efficiency_pitch, scored_at)
         VALUES (%s, %s, %s, %s)
     """,
