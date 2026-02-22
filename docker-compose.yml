@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  gtm_pipeline:
+    build: .
+    container_name: gtm_project
+    env_file:
+      - .env
+    volumes:
+      - .:/app  # Maps your current directory to /app in the container
+    ports:
+      - "3000:3000"

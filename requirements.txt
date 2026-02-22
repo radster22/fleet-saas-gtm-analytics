@@ -1,0 +1,7 @@
+faker
+snowflake-connector-python
+dbt-snowflake
+python-dotenv
+requests  # openAI Or anthropic, depending on which LLM you want to use
+# currently using ollama locally
+openai
