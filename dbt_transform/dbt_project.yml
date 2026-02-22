@@ -9,7 +9,7 @@ target-path: "target"
 clean-targets: ["target", "dbt_packages"]
 
 models:
-  owner_gtm_project:
+  gtm_project:
     # Staging models will be created as views
     staging:
       +materialized: view

@@ -9,6 +9,10 @@ models:
         tests:
           - unique
           - not_null
+      - name: first_name
+        description: "Contact first name."
+      - name: last_name
+        description: "Contact last name."
       - name: restaurant_name
         description: "Name of the restaurant or business."
       - name: contact_created_at
@@ -26,8 +30,15 @@ models:
         description: "Foreign key linking to stg_hubspot_contacts."
         tests:
           - not_null
+          - relationships:
+              to: ref('stg_hubspot_contacts')
+              field: contact_id
       - name: marketing_channel
         description: "The UTM source (e.g., Google Ads, LinkedIn)."
+      - name: page_visited
+        description: "Landing or product page visited by the contact."
+      - name: visit_timestamp
+        description: "Timestamp for when the website visit occurred."
 
   - name: stg_sfdc_opportunities
     description: "Cleaned Salesforce opportunities representing the sales pipeline."
@@ -37,7 +48,24 @@ models:
         tests:
           - unique
           - not_null
+      - name: contact_id
+        description: "Foreign key linking the opportunity to a contact."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_hubspot_contacts')
+              field: contact_id
+      - name: opp_stage
+        description: "Salesforce opportunity stage at extraction time."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Prospecting', 'Qualification', 'Pilot Program', 'Closed Won', 'Closed Lost']
       - name: arr_amount
         description: "Annual Recurring Revenue in USD."
+      - name: opp_created_at
+        description: "Timestamp when the opportunity was created in Salesforce."
+      - name: opp_closed_at
+        description: "Timestamp when the opportunity was closed, if applicable."
       - name: is_closed_won
         description: "Boolean indicating if the deal was successfully closed."

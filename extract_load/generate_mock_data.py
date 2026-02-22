@@ -34,7 +34,7 @@ def generate_and_load_data():
             first_name VARCHAR,
             last_name VARCHAR,
             restaurant_name VARCHAR,
-            created_at TIMESTAMP
+            contact_created_at TIMESTAMP
         )
     """)
     
@@ -70,24 +70,28 @@ def generate_and_load_data():
     web_visits = []
     opportunities = []
     
-    utm_sources = ['Google Ads', 'Organic Search', 'LinkedIn', 'Direct', 'Referral']
-    pages = ['/pricing', '/features/delivery', '/home', '/book-demo']
-    stages = ['Prospecting', 'Qualification', 'Negotiation', 'Closed Won', 'Closed Lost']
+    utm_sources = ['LinkedIn B2B', 'Local Chamber of Commerce', 'Google Ads (Eco)', 'Direct', 'Partner Referral']
+    pages = ['/corporate-partnerships', '/co2-impact-calculator', '/carpool-subsidy-pricing', '/book-demo']
+    stages = ['Prospecting', 'Qualification', 'Pilot Program', 'Closed Won', 'Closed Lost']
+    institution_types = ['University', 'Corporate Office', 'Hospital System', 'Large Restaurant Group']
 
     # Generate 100 Restaurant Leads
     for _ in range(100):
         contact_id = str(uuid.uuid4())
         created_at = fake.date_time_between(start_date='-1y', end_date='now')
         
+        # Generate a business name and an HR/Sustainability contact
+        company_name = f"{fake.city()} {random.choice(institution_types)}"
+        
         contacts.append((
             contact_id,
             fake.first_name(),
             fake.last_name(),
-            f"{fake.last_name()} {random.choice(['Diner', 'Grill', 'Cafe', 'Pizzeria'])}",
+            company_name,
             created_at
         ))
 
-        # Generate 1 to 5 web visits per contact to simulate marketing attribution
+        # Generate web visits to simulate how businesses find the carpool program
         for _ in range(random.randint(1, 5)):
             visit_time = created_at + timedelta(days=random.randint(0, 30))
             web_visits.append((
@@ -98,12 +102,13 @@ def generate_and_load_data():
                 visit_time
             ))
 
-        # 40% of leads turn into Sales Opportunities
+        # Generate Salesforce Opportunities for Corporate Partnerships
         if random.random() < 0.40:
             stage = random.choice(stages)
             opp_created = created_at + timedelta(days=random.randint(5, 45))
             close_date = opp_created + timedelta(days=random.randint(10, 90)) if stage in ['Closed Won', 'Closed Lost'] else None
-            arr_amount = round(random.uniform(1200.0, 15000.0), 2) # SaaS ARR between $1.2k and $15k
+            # ARR represents the annual value of the commuter subsidy contract
+            arr_amount = round(random.uniform(5000.0, 50000.0), 2) 
 
             opportunities.append((
                 str(uuid.uuid4()),
