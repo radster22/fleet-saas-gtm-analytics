@@ -2,9 +2,9 @@ name: CI - Code Quality Validation
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   python-lint:
