@@ -7,20 +7,12 @@ opps as (
 ),
 
 latest_opp_stage as (
-    select
-        contact_id,
-        opp_stage
-    from (
-        select
-            contact_id,
-            opp_stage,
-            row_number() over (
-                partition by contact_id
-                order by coalesce(opp_closed_at, opp_created_at) desc, opp_created_at desc, opportunity_id desc
-            ) as rn
-        from opps
-    ) ranked
-    where rn = 1
+    -- Calling the macro to get the most recent opportunity per contact
+    {{ get_top_row(
+        model='opps',
+        partition_by='contact_id',
+        order_by='coalesce(opp_closed_at, opp_created_at) desc, opp_created_at desc, opportunity_id desc'
+    ) }}
 ),
 
 web_visits as (
@@ -40,7 +32,9 @@ select
     coalesce(w.total_web_visits, 0) as total_web_visits,
     count(o.opportunity_id) as total_opportunities,
     coalesce(sum(case when o.is_closed_won then o.arr_amount else 0 end), 0) as total_arr_generated,
-    los.opp_stage as current_pipeline_stage
+    los.opp_stage as current_pipeline_stage,
+
+    {{ add_audit_columns() }}
 from contacts c
 left join web_visits w on c.contact_id = w.contact_id
 left join opps o on c.contact_id = o.contact_id

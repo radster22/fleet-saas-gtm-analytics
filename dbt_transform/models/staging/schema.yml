@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: stg_hubspot_contacts
-    description: "Cleaned and standardized HubSpot contacts (restaurant owners)."
+    description: "Cleaned and standardized HubSpot contacts (corporate and university prospects)."
     columns:
       - name: contact_id
         description: "Primary key for the contact."
@@ -15,8 +15,12 @@ models:
         description: "Contact last name."
       - name: company_name
         description: "Name of the company or business."
+        tests:
+          - not_null # Crucial: We cannot pitch B2B sustainability without knowing the company name.
       - name: contact_created_at
         description: "Timestamp when the contact entered the system."
+        tests:
+          - not_null
 
   - name: stg_hubspot_web_visits
     description: "Cleaned web visit logs for marketing attribution."
@@ -35,10 +39,18 @@ models:
               field: contact_id
       - name: marketing_channel
         description: "The UTM source (e.g., Google Ads, LinkedIn)."
+        tests:
+          - not_null
+          - accepted_values: # Enforces strict marketing taxonomy so attribution dashboards don't break.
+              values: ['LinkedIn B2B', 'Local Chamber of Commerce', 'Google Ads (Eco)', 'Direct', 'Partner Referral']
       - name: page_visited
         description: "Landing or product page visited by the contact."
+        tests:
+          - not_null
       - name: visit_timestamp
         description: "Timestamp for when the website visit occurred."
+        tests:
+          - not_null
 
   - name: stg_sfdc_opportunities
     description: "Cleaned Salesforce opportunities representing the sales pipeline."
@@ -63,9 +75,19 @@ models:
               values: ['Prospecting', 'Qualification', 'Pilot Program', 'Closed Won', 'Closed Lost']
       - name: arr_amount
         description: "Annual Recurring Revenue in USD."
+        tests:
+          - not_null
+          - is_positive
       - name: opp_created_at
         description: "Timestamp when the opportunity was created in Salesforce."
+        tests:
+          - not_null
       - name: opp_closed_at
         description: "Timestamp when the opportunity was closed, if applicable."
+        # Note: Intentionally left without not_null because open deals won't have a close date yet.
       - name: is_closed_won
         description: "Boolean indicating if the deal was successfully closed."
+        tests:
+          - not_null
+          - accepted_values: # Explicitly testing boolean states to prevent weird nulls or string conversions.
+              values: [true, false]

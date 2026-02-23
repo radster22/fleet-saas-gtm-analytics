@@ -33,7 +33,7 @@ def score_prospect_with_ollama(prompt_context: str) -> dict:
                 "temperature": 0.5,     # Low temp for strict adherence to the scoring logic
                 "top_p": 0.9,           # Focused vocabulary for professional B2B tone
                 "num_predict": 500,     # Hard limit on length to ensure it's exactly 1 sentence
-                "seed": 42
+                #"seed": 42
                 },
             "stream": False,
         },
