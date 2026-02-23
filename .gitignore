@@ -1,6 +1,37 @@
+# ========================
+# 🛑 SECRETS (CRITICAL)
+# ========================
 .env
+
+# ========================
+# 🐍 PYTHON & VIRTUAL ENVS
+# ========================
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.pytest_cache/
+
+# ========================
+# 🏗️ DBT (DATA BUILD TOOL)
+# ========================
+# Ignore dbt build artifacts, compiled SQL, and downloaded packages
 dbt_transform/target/
 dbt_transform/dbt_packages/
 dbt_transform/logs/
+dbt_transform/.user.yml
+
+# ========================
+# 💻 OS GENERATED FILES
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# 📝 IDEs & EDITORS
+# ========================
+.vscode/
+.idea/
+*.swp
